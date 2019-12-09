@@ -1,0 +1,10 @@
+carbs base
+==========
+
+Tool for generating the rootfs tarball
+You should execute the programs on the 
+base directory, they also provide instructions.
+
+Currently, this bootstrapper is not in a
+functional state. Do not use it if your
+intention is not to troubleshoot the program.

@@ -1,0 +1,44 @@
+#
+# Configuration file for Carbs bootstrapper
+#
+
+# Root directory
+# This is where the rootfs will be installed.
+MNTDIR="/mnt"
+
+# List of packages to be installed
+# Most of those are already dependencies 
+# of each other but it is not a bad idea
+# to put them to the list anyway.
+PKGS="baselayout kiss musl gcc mandoc make gzip xz zlib bzip2 binutils bison curl git perl linux-headers m4 flex busybox pkgconf rsync libressl libelf"
+
+# Build flags
+# It is a good idea to not use flags like "native"
+# If you plan on using the tarball on another computer
+# due to architechtural differences.
+CFLAGS="-march=x86-64 -mtune=generic -pipe -Os"
+CXXFLAGS="-march=x86-64 -mtune=generic -pipe -Os"
+MAKEFLAGS="-j$(nproc)"
+
+# Repository
+# This repository will be cloned to /tmp/repo on the
+# host, and /var/db/kiss/repo on the target system.
+REPO="git://git.carbslinux.org/repository"
+HOST_REPO_PATH="/tmp/repo/core"
+
+export MNTDIR PKGS CFLAGS CXXFLAGS REPO HOST_REPO_PATH MAKEFLAGS
+
+postinstall() {
+	# You can preferably add some custom
+	# commands if you want a postinstall
+	# procedure. This runs right after kiss
+	# install is complete
+
+	# Currently default function is 'true'
+	# because there is nothing else to be done,
+	# but you can safely remove it if you will
+	# be adding some post-installation commands
+	true
+}
+
+# vim:filetype=sh
