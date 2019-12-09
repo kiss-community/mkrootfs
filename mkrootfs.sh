@@ -63,7 +63,7 @@ if [ -n "$REPO" ]; then
 	# Remove if /tmp/repo already exists
 	rm -rf /tmp/repo
 	git clone --depth 1 "$REPO" /tmp/repo
-	export KISS_PATH="${REPO_PATH:-/tmp/repo/core}"
+	export KISS_PATH="${HOST_REPO_PATH:-/tmp/repo/core}"
 else
 	msg "REPO variable does not exist, current repository
 will be copied directly to the root filesystem"
