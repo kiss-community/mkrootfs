@@ -9,6 +9,7 @@ msg() { printf "\033[1;35m=>\033[m $1\\n" ;}
 error() { msg "\033[1;31mERROR: \033[m$1" ;} >&2
 die() { error "$1"; exit 1 ;}
 ask() { printf "\033[1;33m== $1 ==\\n(y/N) "; read ans; case "$ans" in [Yy]*) return 0 ;; *) return 1 ;; esac ;}
+BASEDIR="$PWD"
 
 
 # If there is no config file, we copy config.def
