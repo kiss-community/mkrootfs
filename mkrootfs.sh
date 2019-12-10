@@ -83,4 +83,8 @@ msg "Package build complete, starting package installation"
 kiss i $PKGS
 msg "Installation Complete, starting custombuild procedure if there is one"
 postinstall
+msg "Generating rootfs to $BASEDIR"
+cd "$MNTDIR" || die "Could not change directory to $MNTDIR"
+tar -cpvJf "$BASEDIR/carbs-rootfs-$(date +%Y%m%d).tar.xz" .
+cd "$BASEDIR" || die "Could not change directory to $BASEDIR"
 msg "Done!"
