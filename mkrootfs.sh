@@ -82,5 +82,5 @@ msg "Package build complete, starting package installation"
 # shellcheck disable=SC2086
 kiss i $PKGS
 msg "Installation Complete, starting custombuild procedure if there is one"
-custombuild
+postinstall
 msg "Done!"
