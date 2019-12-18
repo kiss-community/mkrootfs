@@ -82,10 +82,6 @@ msg "Starting build from the PKGS variable"
 # shellcheck disable=SC2086
 kiss b $PKGS
 
-msg "Package build complete, starting package installation"
-# shellcheck disable=SC2086
-kiss i $PKGS
-
 # You can check out about post-installation 
 # from the configuration file
 msg "Installation Complete, starting custombuild procedure if there is one"
