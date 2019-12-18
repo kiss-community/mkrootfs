@@ -67,6 +67,7 @@ if [ -n "$REPO" ]; then
 	rm -rf /tmp/repo
 	git clone --depth 1 "$REPO" /tmp/repo
 	msg "Cloning repository to /var/db/kiss/repo"
+	rm -rf "$MNTDIR/var/db/kiss/repo"
 	git clone --depth 1 "$REPO" "$MNTDIR/var/db/kiss/repo"
 	export KISS_PATH="${HOST_REPO_PATH:-/tmp/repo/core}"
 else
