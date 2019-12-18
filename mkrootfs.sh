@@ -39,7 +39,7 @@ out \
 "Repository and package options" \
 "" \
 "REPO = $REPO" \
-"REPOSITORY PATH = $REPO_PATH" \
+"REPOSITORY PATH = $HOST_REPO_PATH" \
 "PKGS = $PKGS"
 
 
