@@ -11,6 +11,9 @@ die() { error "$1"; exit 1 ;}
 ask() { printf "\033[1;33m== $1 ==\\n(y/N) "; read ans; case "$ans" in [Yy]*) return 0 ;; *) return 1 ;; esac ;}
 
 
+# Exit if the user is not root
+! [ "$(id -u)" -eq 0 ] && die "Please run as root"
+
 # Let's get current working directory
 BASEDIR="$PWD"
 
