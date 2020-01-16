@@ -1,10 +1,11 @@
 carbs base
 ==========
 
-Tool for generating the rootfs tarball
-You should execute the programs on the 
-base directory, they also provide instructions.
+Tool for generating the rootfs tarball.
+Tarballs on https://dl.carbslinux.org are
+generated from this script. You should run 
+mkrootfs.sh as root. If you want to configure, 
+copy config.def to config and edit the file.
 
-Currently, this bootstrapper is not in a
-functional state. Do not use it if your
-intention is not to troubleshoot the program.
+Please report any issues you encounter from this
+program.
