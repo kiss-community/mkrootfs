@@ -4,11 +4,10 @@
 
 
 # Functions
-out() { printf "%s\\n" "$@" ;}
-msg() { printf "\033[1;35m=>\033[m $1\\n" ;}
+msg() { printf '\033[1;35m=>\033[m %s\n' "$1" ;}
 error() { msg "\033[1;31mERROR: \033[m$1" ;} >&2
 die() { error "$1"; exit 1 ;}
-ask() { printf "\033[1;33m== $1 ==\\n(y/N) "; read ans; case "$ans" in [Yy]*) return 0 ;; *) return 1 ;; esac ;}
+ask() { printf '\033[1;33m== %s ==\\n(y/N) ' "$1" ; read ans; case "$ans" in [Yy]*) return 0 ;; *) return 1 ;; esac ;}
 
 
 # Exit if the user is not root
@@ -29,22 +28,23 @@ BASEDIR="$PWD"
 
 
 # Print variables from the configuration file
-out \
-"Here are the configuration values:" \
-"" \
-"MNTDIR = $MNTDIR" \
-"" \
-"Build Options" \
-"CFLAGS = $CFLAGS" \
-"CXXFLAGS = $CXXFLAGS" \
-"MAKEFLAGS = $MAKEFLAGS" \
-"" \
-"Repository and package options" \
-"" \
-"REPO = $REPO" \
-"REPOSITORY PATH = $HOST_REPO_PATH" \
-"PKGS = $PKGS"
+cat <<EOF
+Here are the configuration values:
 
+MNTDIR = $MNTDIR
+
+Build Options
+CFLAGS = $CFLAGS
+CXXFLAGS = $CXXFLAGS
+MAKEFLAGS = $MAKEFLAGS
+
+Repository and package options
+
+REPO = $REPO
+REPOSITORY PATH = $HOST_REPO_PATH
+PKGS = $PKGS
+
+EOF
 
 # Check if there is no NOWELCOME variable set in
 # the configuration file. If there is such variable
