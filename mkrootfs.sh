@@ -50,33 +50,26 @@ EOF
 # the configuration file. If there is such variable
 # set in the configuration, the bootstrapper will 
 # start immediately
-if [ -z "$NOCONFIRM" ]; then
-	ask "Do you want to start the bootstrapper?" || die "User exited"
-else
-	msg "NOCONFIRM variable exists, starting without asking."
-fi
-
+[ "$NOCONFIRM" ] || {
+    ask "Do you want to start the bootstrapper?" || die "User exited"
+}
 
 # Script starts here
 
 msg "Starting Script..."
-
 msg "Setting KISS_ROOT to $MNTDIR"
 export KISS_ROOT="$MNTDIR"
 
 # Check whether REPO and REPO_PATH variables exist
-if [ -n "$REPO" ]; then
-	# Remove if /tmp/repo already exists
-	rm -rf /tmp/repo
-	git clone --depth 1 "$REPO" /tmp/repo
-	msg "Cloning repository to /var/db/kiss/repo"
-	rm -rf "$MNTDIR/var/db/kiss/repo"
-	git clone --depth 1 "$REPO" "$MNTDIR/var/db/kiss/repo"
-	export KISS_PATH="${HOST_REPO_PATH:-/tmp/repo/core}"
-else
-	msg "REPO variable does not exist, current repository
-will be copied directly to the root filesystem"
-fi
+[ "$REPO" ] && {
+    # Remove if /tmp/repo already exists
+    rm -rf /tmp/repo
+    git clone --depth 1 "$REPO" /tmp/repo
+    msg "Cloning repository to /var/db/kiss/repo"
+    rm -rf "$MNTDIR/var/db/kiss/repo"
+    git clone --depth 1 "$REPO" "$MNTDIR/var/db/kiss/repo"
+    export KISS_PATH="${HOST_REPO_PATH:-/tmp/repo/core}"
+} || die "REPO variable is not set"
 
 msg "Starting build from the PKGS variable"
 
