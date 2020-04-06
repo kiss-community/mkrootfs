@@ -1,13 +1,15 @@
 #!/bin/sh -e
+# shellcheck disable=1090
+
 # Bootstrapper for Carbs Linux
 # See LICENSE file for copyright and license details
 
 
 # Functions
-msg() { printf '\033[1;35m=>\033[m %s\n' "$1" ;}
-error() { msg "\033[1;31mERROR: \033[m$1" ;} >&2
+msg() { printf '\033[1;35m-> \033[m%s\n' "$@" ;}
+error() { printf '\033[1;31mERROR: \033[m%s\n' "$@" ;} >&2
 die() { error "$1"; exit 1 ;}
-ask() { printf '\033[1;33m== %s ==\\n(y/N) ' "$1" ; read ans; case "$ans" in [Yy]*) return 0 ;; *) return 1 ;; esac ;}
+ask() { printf '\033[1;33m== %s ==\n(y/N) ' "$1" ; read ans; case "$ans" in [Yy]*) return 0 ;; *) return 1 ;; esac ;}
 
 
 # Exit if the user is not root
