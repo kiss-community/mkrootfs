@@ -23,7 +23,7 @@ MAKEFLAGS="-j$(nproc)"
 # Repository
 # This repository will be cloned to /tmp/repo on the
 # host, and /var/db/kiss/repo on the target system.
-REPO="git://git.carbslinux.org/repository"
+REPO="https://github.com/CarbsLinux/repository"
 HOST_REPO_PATH="/tmp/repo/core"
 
 export MNTDIR PKGS CFLAGS CXXFLAGS REPO HOST_REPO_PATH MAKEFLAGS
