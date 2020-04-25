@@ -10,7 +10,7 @@ MNTDIR="/mnt"
 # Most of those are already dependencies 
 # of each other but it is not a bad idea
 # to put them to the list anyway.
-PKGS="baselayout kiss musl gcc make gzip xz zlib bzip2 binutils bison curl git linux-headers m4 flex busybox pkgconf rsync libressl"
+PKGS="baselayout kiss musl gcc make gzip xz zlib bzip2 binutils bison curl git linux-headers m4 flex busybox pkgconf libressl"
 
 # Build flags
 # It is a good idea to not use flags like "native"
