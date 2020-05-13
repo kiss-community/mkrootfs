@@ -11,7 +11,7 @@ die() { printf '\033[1;31m!> ERROR: \033[m%s\n' "$@" >&2; exit 1 ;}
 
 
 # Exit if the user is not root
-! [ "$(id -u)" -eq 0 ] && die "Please run as root"
+[ "$(id -u)" -eq 0 ] || die "Please run as root"
 
 # Let's get current working directory
 BASEDIR="$PWD"
@@ -20,11 +20,11 @@ BASEDIR="$PWD"
 # to config. After we make sure config file is
 # in place, we source the contents
 ! [ -e config ] && cp config.def config
-. "$PWD/config"
+. "${0%/*}/config"
 
 # Check whether absolutely required variables are set.
-[ -n "$PKGS" ] || die "You must set PKGS variable to continue the bootstrapper"
-[ -n "$MNTDIR" ] || die "You must specify fakeroot location \"MNTDIR\" in order to continue the bootstrapper"
+[ "$PKGS" ]   || die "You must set PKGS variable to continue the bootstrapper"
+[ "$MNTDIR" ] || die "You must specify fakeroot location 'MNTDIR' in order to continue the bootstrapper"
 
 
 # Print variables from the configuration file
@@ -46,10 +46,7 @@ PKGS = $PKGS
 
 EOF
 
-# Check if there is no NOWELCOME variable set in
-# the configuration file. If there is such variable
-# set in the configuration, the bootstrapper will 
-# start immediately
+# If there is NOCONFIRM, skip the prompt.
 [ "$NOCONFIRM" ] || {
     printf '\033[1;33m?> \033[mDo you want to start the bootstrapper? (y/N)\n'
     read -r ans
@@ -72,7 +69,6 @@ msg "Cloning repository to /var/db/kiss/repo"
 rm -rf "$MNTDIR/var/db/kiss/repo"
 git clone --depth 1 "$REPO" "$MNTDIR/var/db/kiss/repo"
 export KISS_PATH="${HOST_REPO_PATH:-/tmp/repo/core}"
-
 
 msg "Starting build from the PKGS variable"
 
