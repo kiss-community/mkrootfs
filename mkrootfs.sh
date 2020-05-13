@@ -91,7 +91,8 @@ msg "Removing root cache"
 rm -rf "$MNTDIR/root/.cache"
 
 msg "Generating rootfs to $BASEDIR"
-cd "$MNTDIR" || die "Could not change directory to $MNTDIR"
-tar -cpvJf "$BASEDIR/carbs-rootfs-$(date +%Y%m%d).tar.xz" .
-cd "$BASEDIR" || die "Could not change directory to $BASEDIR"
+(
+    cd "$MNTDIR" || die "Could not change directory to $MNTDIR"
+    tar -cpvJf "$BASEDIR/carbs-rootfs-$(date +%Y%m%d)-$(uname -m).tar.xz" .
+)
 msg "Done!"
