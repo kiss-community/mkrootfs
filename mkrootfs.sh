@@ -87,7 +87,7 @@ msg "Installation Complete, starting custombuild procedure if there is one"
 postinstall
 
 # Remove junk from the rootfs
-msg "Cleaning package cache"
+msg "Removing root cache"
 rm -rf "$MNTDIR/root/.cache"
 
 msg "Generating rootfs to $BASEDIR"
