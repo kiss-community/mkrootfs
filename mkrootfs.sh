@@ -79,10 +79,7 @@ msg "Starting build from the PKGS variable"
 # Word Splitting is intentional here, as we are
 # passing package names seperately
 # shellcheck disable=SC2086
-{
-    yes '' | KISS_ASROOT=1 kiss b $PKGS
-    yes '' | KISS_ASROOT=1 kiss i $PKGS
-}
+KISS_NOPROMPT=1 KISS_ASROOT=1 kiss b $PKGS
 
 # You can check out about post-installation 
 # from the configuration file
