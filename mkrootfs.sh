@@ -63,15 +63,16 @@ msg "Setting KISS_ROOT to $MNTDIR"
 export KISS_ROOT="$MNTDIR"
 
 # Check whether REPO and REPO_PATH variables exist
-[ "$REPO" ] && {
-    # Remove if /tmp/repo already exists
-    rm -rf /tmp/repo
-    git clone --depth 1 "$REPO" /tmp/repo
-    msg "Cloning repository to /var/db/kiss/repo"
-    rm -rf "$MNTDIR/var/db/kiss/repo"
-    git clone --depth 1 "$REPO" "$MNTDIR/var/db/kiss/repo"
-    export KISS_PATH="${HOST_REPO_PATH:-/tmp/repo/core}"
-} || die "REPO variable is not set"
+[ "$REPO" ] || die "REPO variable is not set"
+
+# Remove if /tmp/repo already exists
+rm -rf /tmp/repo
+git clone --depth 1 "$REPO" /tmp/repo
+msg "Cloning repository to /var/db/kiss/repo"
+rm -rf "$MNTDIR/var/db/kiss/repo"
+git clone --depth 1 "$REPO" "$MNTDIR/var/db/kiss/repo"
+export KISS_PATH="${HOST_REPO_PATH:-/tmp/repo/core}"
+
 
 msg "Starting build from the PKGS variable"
 
