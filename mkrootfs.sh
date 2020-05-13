@@ -7,7 +7,6 @@
 
 # Functions
 msg() { printf '\033[1;35m-> \033[m%s\n' "$@" ;}
-ask() { printf '\033[1;33m== %s ==\n(y/N) ' "$1" ; read ans; case "$ans" in [Yy]*) return 0 ;; *) return 1 ;; esac ;}
 die() { printf '\033[1;31m!> ERROR: \033[m%s\n' "$@" >&2; exit 1 ;}
 
 
@@ -52,7 +51,9 @@ EOF
 # set in the configuration, the bootstrapper will 
 # start immediately
 [ "$NOCONFIRM" ] || {
-    ask "Do you want to start the bootstrapper?" || die "User exited"
+    printf '\033[1;33m?> \033[mDo you want to start the bootstrapper? (y/N)\n'
+    read -r ans
+    case "$ans" in [Yy]*|'') ;; *) die "User exited" ; esac
 }
 
 # Script starts here
