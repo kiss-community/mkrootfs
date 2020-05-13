@@ -7,9 +7,8 @@
 
 # Functions
 msg() { printf '\033[1;35m-> \033[m%s\n' "$@" ;}
-error() { printf '\033[1;31mERROR: \033[m%s\n' "$@" ;} >&2
-die() { error "$1"; exit 1 ;}
 ask() { printf '\033[1;33m== %s ==\n(y/N) ' "$1" ; read ans; case "$ans" in [Yy]*) return 0 ;; *) return 1 ;; esac ;}
+die() { printf '\033[1;31m!> ERROR: \033[m%s\n' "$@" >&2; exit 1 ;}
 
 
 # Exit if the user is not root
