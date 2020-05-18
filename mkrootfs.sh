@@ -4,6 +4,12 @@
 # Bootstrapper for Carbs Linux
 # See LICENSE file for copyright and license details
 
+# Source kiss as a library
+kissloc=$(command -v kiss)
+kissln=$(wc -l < "$kissloc")
+sed "${kissln}d" "$kissloc" > .kisslib
+. ./.kisslib
+
 
 # Functions
 msg() { printf '\033[1;35m-> \033[m%s\n' "$@" ;}
@@ -26,23 +32,27 @@ BASEDIR="$PWD"
 [ "$PKGS" ]   || die "You must set PKGS variable to continue the bootstrapper"
 [ "$MNTDIR" ] || die "You must specify fakeroot location 'MNTDIR' in order to continue the bootstrapper"
 
+# Word splitting is intentional here
+# shellcheck disable=2086
+pkg_order $PKGS
 
 # Print variables from the configuration file
 cat <<EOF
 Here are the configuration values:
 
-MNTDIR = $MNTDIR
+MNTDIR    = $MNTDIR
 
 Build Options
-CFLAGS = $CFLAGS
-CXXFLAGS = $CXXFLAGS
+CFLAGS    = $CFLAGS
+CXXFLAGS  = $CXXFLAGS
 MAKEFLAGS = $MAKEFLAGS
 
 Repository and package options
 
-REPO = $REPO
+REPO      = $REPO
 REPOSITORY PATH = $HOST_REPO_PATH
-PKGS = $PKGS
+PKGS      = $PKGS
+ORDER     = $order
 
 EOF
 
