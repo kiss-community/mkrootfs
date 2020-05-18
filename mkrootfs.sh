@@ -1,5 +1,5 @@
 #!/bin/sh -e
-# shellcheck disable=1090
+# shellcheck disable=1090,1091
 
 # Bootstrapper for Carbs Linux
 # See LICENSE file for copyright and license details
