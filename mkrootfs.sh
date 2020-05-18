@@ -94,13 +94,13 @@ msg "Starting build from the PKGS variable"
 
 # shellcheck disable=2154
 for pkg in $order; do
-    # Check if the package is already installed and skip.
-    kiss l "$pkg" >/dev/null 2>&1 && continue
-
     # Get the package directory so we can get version
     # and release numbers.
     pkgdir=$(kiss s "$pkg" | sed 1q)
     read -r ver rel < "$pkgdir/version"
+
+    # Check if the package is already installed and skip.
+    [ "$(kiss l "$pkg")" = "$pkg $ver $rel" ] && continue
 
     # Check if a prebuild tarball exists, build the package
     # if it doesn't exist.
