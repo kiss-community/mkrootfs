@@ -4,7 +4,7 @@
 
 # Root directory
 # This is where the rootfs will be installed.
-MNTDIR="/mnt"
+MNTDIR="$PWD/rootfs"
 
 # List of packages to be installed
 # Most of those are already dependencies 

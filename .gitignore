@@ -1,2 +1,3 @@
 config
+rootfs
 *.tar.xz
