@@ -91,10 +91,27 @@ export KISS_PATH="${HOST_REPO_PATH:-/tmp/repo/core}"
 
 msg "Starting build from the PKGS variable"
 
-# Word Splitting is intentional here, as we are
-# passing package names seperately
-# shellcheck disable=SC2086
-KISS_NOPROMPT=1 KISS_ASROOT=1 kiss b $PKGS
+
+# shellcheck disable=2154
+for pkg in $order; do
+    # Check if the package is already installed and skip.
+    kiss l "$pkg" >/dev/null 2>&1 && continue
+
+    # Get the package directory so we can get version
+    # and release numbers.
+    pkgdir=$(kiss s "$pkg" | sed 1q)
+    read -r ver rel < "$pkgdir/version"
+
+    # Check if a prebuild tarball exists, build the package
+    # if it doesn't exist.
+    #
+    # pkg_order should be dealing with packages in a way that
+    # no prompts are asked, but let's not take any chances
+    # either.
+    [ -f "${XDG_CONFIG_HOME:-$HOME/.cache}/kiss/bin/$pkg#$ver-$rel.tar.${KISS_COMPRESS:-gz}" ] ||
+        KISS_NOPROMPT=1 kiss b "$pkg"
+    KISS_NOPROMPT=1 kiss i "$pkg"
+done
 
 # You can check out about post-installation 
 # from the configuration file
