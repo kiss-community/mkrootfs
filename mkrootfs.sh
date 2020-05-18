@@ -86,6 +86,27 @@ rm -rf /tmp/repo "$MNTDIR/var/db/kiss/repo"
 git clone --depth 1 "$REPO" /tmp/repo
 cp -r /tmp/repo "$MNTDIR/var/db/kiss/repo"
 
+# Install extra repositories defined in a 'repositories'
+# file if it exists. The file is formed by these three
+# space seperated sections:
+#
+# 1: URI of git repository
+# 2: The location where the repository will be cloned.
+# 3: Options for the git clone, space seperation is not important.
+#
+[ -f repositories ] &&
+while read -r repourl repodir gitopts; do
+    # We already die if MNTDIR doesn't exist
+    # shellcheck disable=2115
+    rm -rf "$MNTDIR/$repodir"
+    mkdir -p "$MNTDIR/${repodir%/*}"
+
+    # We want word splitting here.
+    # shellcheck disable=2086
+    git clone $gitopts -- "$repourl" "$MNTDIR/$repodir"
+done < repositories
+
+
 # We export the new KISS_PATH
 export KISS_PATH="${HOST_REPO_PATH:-/tmp/repo/core}"
 
