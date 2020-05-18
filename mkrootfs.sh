@@ -77,12 +77,16 @@ export KISS_ROOT="$MNTDIR"
 # Check whether REPO and REPO_PATH variables exist
 [ "$REPO" ] || die "REPO variable is not set"
 
-# Remove if /tmp/repo already exists
-rm -rf /tmp/repo
+# Create parent directories for the repositories, and
+# remove pre-existing repositories. We then shallow
+# clone the repositories to both locations.
+msg "Cloning repository"
+mkdir -p "$MNTDIR/var/db/kiss" /tmp
+rm -rf /tmp/repo "$MNTDIR/var/db/kiss/repo"
 git clone --depth 1 "$REPO" /tmp/repo
-msg "Cloning repository to /var/db/kiss/repo"
-rm -rf "$MNTDIR/var/db/kiss/repo"
-git clone --depth 1 "$REPO" "$MNTDIR/var/db/kiss/repo"
+cp -r /tmp/repo "$MNTDIR/var/db/kiss/repo"
+
+# We export the new KISS_PATH
 export KISS_PATH="${HOST_REPO_PATH:-/tmp/repo/core}"
 
 msg "Starting build from the PKGS variable"
