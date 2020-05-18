@@ -4,20 +4,25 @@
 # Bootstrapper for Carbs Linux
 # See LICENSE file for copyright and license details
 
-# Source kiss as a library
-kissloc=$(command -v kiss)
-kissln=$(wc -l < "$kissloc")
-sed "${kissln}d" "$kissloc" > .kisslib
-. ./.kisslib
+{
+    # Source kiss as a library so that we can use pkg_order
+    #
+    # Get the line number so we can remove the last line
+    # that is calling the main function.
+    kissloc=$(command -v kiss)
+    kissln=$(wc -l < "$kissloc")
 
+    # Save the file on a temporary .kisslib file where we
+    # will be reading the library functions.
+    sed "${kissln}d" "$kissloc" > .kisslib
+    . ./.kisslib
+    rm -f .kisslib
+}
 
 # Functions
 msg() { printf '\033[1;35m-> \033[m%s\n' "$@" ;}
 die() { printf '\033[1;31m!> ERROR: \033[m%s\n' "$@" >&2; exit 1 ;}
 
-
-# Exit if the user is not root
-[ "$(id -u)" -eq 0 ] || die "Please run as root"
 
 # Let's get current working directory
 BASEDIR="$PWD"
