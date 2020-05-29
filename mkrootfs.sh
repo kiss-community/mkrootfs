@@ -82,7 +82,7 @@ export KISS_ROOT="$MNTDIR"
 # remove pre-existing repositories. We then shallow
 # clone the repositories to both locations.
 case $REPO in 
-    rysnc://*)
+    rsync://*)
         msg "Acquiring repository"
         mkdir -p "$MNTDIR/var/db/kiss" /tmp
         rm -rf /tmp/repo "$MNTDIR/var/db/kiss/repo"
