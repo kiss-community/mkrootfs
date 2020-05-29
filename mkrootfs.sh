@@ -42,6 +42,7 @@ BASEDIR="$PWD"
 pkg_order $PKGS
 
 # Print variables from the configuration file
+# shellcheck disable=2154
 cat <<EOF
 Here are the configuration values:
 
@@ -80,11 +81,21 @@ export KISS_ROOT="$MNTDIR"
 # Create parent directories for the repositories, and
 # remove pre-existing repositories. We then shallow
 # clone the repositories to both locations.
-msg "Cloning repository"
-mkdir -p "$MNTDIR/var/db/kiss" /tmp
-rm -rf /tmp/repo "$MNTDIR/var/db/kiss/repo"
-git clone --depth 1 "$REPO" /tmp/repo
-cp -r /tmp/repo "$MNTDIR/var/db/kiss/repo"
+case $REPO in 
+    rysnc://*)
+        msg "Acquiring repository"
+        mkdir -p "$MNTDIR/var/db/kiss" /tmp
+        rm -rf /tmp/repo "$MNTDIR/var/db/kiss/repo"
+        rsync "$REPO/" /tmp/repo
+        cp -r /tmp/repo "$MNTDIR/var/db/kiss/repo"
+    ;;
+    *)
+        msg "Cloning repository"
+        mkdir -p "$MNTDIR/var/db/kiss" /tmp
+        rm -rf /tmp/repo "$MNTDIR/var/db/kiss/repo"
+        git clone --depth 1 "$REPO" /tmp/repo
+        cp -r /tmp/repo "$MNTDIR/var/db/kiss/repo"
+esac
 
 # Install extra repositories defined in a 'repositories'
 # file if it exists. The file is formed by these three
@@ -142,6 +153,6 @@ postinstall
 msg "Generating rootfs to $BASEDIR"
 (
     cd "$MNTDIR" || die "Could not change directory to $MNTDIR"
-    tar -cpvJf "$BASEDIR/carbs-rootfs-$(date +%Y%m%d)-$(uname -m).tar.xz" .
+    tar -cJf "$BASEDIR/carbs-rootfs-$(date +%Y%m%d)-$(uname -m).tar.xz" .
 )
 msg "Done!"
