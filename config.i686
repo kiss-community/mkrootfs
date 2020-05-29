@@ -10,7 +10,7 @@ MNTDIR="$PWD/rootfs"
 # Most of those are already dependencies 
 # of each other but it is not a bad idea
 # to put them to the list anyway.
-PKGS="baselayout kiss musl gcc make gzip xz zlib bzip2 binutils bison curl git linux-headers m4 flex busybox pkgconf rsync libressl"
+PKGS="baselayout kiss musl gcc make gzip xz zlib bzip2 binutils bison curl rsync linux-headers m4 flex busybox pkgconf rsync libressl"
 
 # Build flags
 # It is a good idea to not use flags like "native"
@@ -23,7 +23,7 @@ MAKEFLAGS="-j$(nproc)"
 # Repository
 # This repository will be cloned to /tmp/repo on the
 # host, and /var/db/kiss/repo on the target system.
-REPO="https://github.com/CarbsLinux/repository"
+REPO="rsync://carbslinux.org/repo"
 HOST_REPO_PATH="/tmp/repo/i686:/tmp/repo/core"
 
 export MNTDIR PKGS CFLAGS CXXFLAGS REPO HOST_REPO_PATH MAKEFLAGS
