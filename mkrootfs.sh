@@ -86,7 +86,7 @@ case $REPO in
         msg "Acquiring repository"
         mkdir -p "$MNTDIR/var/db/kiss" /tmp
         rm -rf /tmp/repo "$MNTDIR/var/db/kiss/repo"
-        rsync "$REPO/" /tmp/repo
+        rsync -avCz --delete "$REPO/" /tmp/repo
         cp -r /tmp/repo "$MNTDIR/var/db/kiss/repo"
     ;;
     *)
