@@ -11,7 +11,7 @@ MNTDIR="$PWD/rootfs"
 # of each other but it is not a bad idea
 # to put them to the list anyway.
 PKGS="baselayout kiss musl gcc make gzip xz zlib bzip2 binutils byacc curl \
-     linux-headers m4 flex busybox pkgconf rsync bearssl"
+     linux-headers m4 flex busybox pkgconf rsync bearssl ca-certificates"
 
 # Build flags
 # It is a good idea to not use flags like "native"
