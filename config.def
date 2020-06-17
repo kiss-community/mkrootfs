@@ -10,14 +10,23 @@ MNTDIR="$PWD/rootfs"
 # Most of those are already dependencies 
 # of each other but it is not a bad idea
 # to put them to the list anyway.
-PKGS="baselayout kiss musl gcc make gzip xz zlib bzip2 binutils bison curl linux-headers m4 flex busybox pkgconf rsync libressl"
+PKGS="baselayout kiss musl gcc make gzip xz zlib bzip2 binutils byacc curl \
+     linux-headers m4 flex busybox pkgconf rsync bearssl"
 
 # Build flags
 # It is a good idea to not use flags like "native"
 # If you plan on using the tarball on another computer
-# due to architechtural differences.
-CFLAGS="-march=x86-64 -mtune=generic -pipe -Os"
-CXXFLAGS="-march=x86-64 -mtune=generic -pipe -Os"
+# due to architechtural differences. You can manually
+# override this march configuration here by removing the
+# case.
+#
+march=$(uname -m)
+case "$march" in
+    x86_64) march=x86-64 ;;
+    i*86)   march=i686   ;;
+esac
+CFLAGS="-march=$march -mtune=generic -pipe -Os"
+CXXFLAGS="-march=$march -mtune=generic -pipe -Os"
 MAKEFLAGS="-j$(nproc)"
 
 # Repository
