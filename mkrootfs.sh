@@ -1,7 +1,7 @@
 #!/bin/sh -e
 # shellcheck disable=1090,1091
 
-# Bootstrapper for Carbs Linux
+# Bootstrapper for KISS Linux
 # See LICENSE file for copyright and license details
 
 {
@@ -55,10 +55,10 @@ MAKEFLAGS = $MAKEFLAGS
 
 Repository and package options
 
-REPO      = $REPO
+REPO            = $REPO
 REPOSITORY PATH = $HOST_REPO_PATH
-PKGS      = $PKGS
-ORDER     = $order
+PKGS            = $PKGS
+ORDER           = $order
 
 EOF
 
@@ -78,24 +78,28 @@ export KISS_ROOT="$MNTDIR"
 # Check whether REPO and REPO_PATH variables exist
 [ "$REPO" ] || die "REPO variable is not set"
 
+mkdir -p "$MNTDIR/var/db/kiss" /tmp
+rm -rf /tmp/repo "$MNTDIR/var/db/kiss/repo"
 # Create parent directories for the repositories, and
 # remove pre-existing repositories. We then shallow
 # clone the repositories to both locations.
-case $REPO in 
-    rsync://*)
-        msg "Acquiring repository"
-        mkdir -p "$MNTDIR/var/db/kiss" /tmp
-        rm -rf /tmp/repo "$MNTDIR/var/db/kiss/repo"
-        rsync -avCz --include=core --delete "$REPO/" /tmp/repo
-        cp -r /tmp/repo "$MNTDIR/var/db/kiss/repo"
-    ;;
-    *)
+case $REPO in
+    git+*)
         msg "Cloning repository"
-        mkdir -p "$MNTDIR/var/db/kiss" /tmp
-        rm -rf /tmp/repo "$MNTDIR/var/db/kiss/repo"
-        git clone --depth 1 "$REPO" /tmp/repo
-        cp -r /tmp/repo "$MNTDIR/var/db/kiss/repo"
+        git clone --depth 1 "${REPO##*+}" /tmp/repo
+    ;;
+    local+*)
+        msg "Copying repository"
+        cp -r "${REPO##*+}" /tmp/repo
+    ;;
 esac
+cp -r /tmp/repo "$MNTDIR/var/db/kiss/repo"
+
+msg "Repo Download Complete, starting 'postrepodown' procedure if there is one"
+(
+    cd /tmp/repo
+    postrepodown
+)
 
 # Install extra repositories defined in a 'repositories'
 # file if it exists. The file is formed by these three
@@ -128,11 +132,11 @@ msg "Starting build from the PKGS variable"
 for pkg in $order; do
     # Get the package directory so we can get version
     # and release numbers.
-    pkgdir=$(kiss s "$pkg" | sed 1q)
+    pkgdir=$(kiss search "$pkg" | sed 1q)
     read -r ver rel < "$pkgdir/version"
 
     # Check if the package is already installed and skip.
-    [ "$(kiss l "$pkg")" = "$pkg $ver $rel" ] && continue
+    [ "$(kiss list "$pkg")" = "$pkg $ver-$rel" ] && continue
 
     # Check if a prebuild tarball exists, build the package
     # if it doesn't exist.
@@ -140,19 +144,19 @@ for pkg in $order; do
     # pkg_order should be dealing with packages in a way that
     # no prompts are asked, but let's not take any chances
     # either.
-    [ -f "${XDG_CONFIG_HOME:-$HOME/.cache}/kiss/bin/$pkg#$ver-$rel.tar.${KISS_COMPRESS:-gz}" ] ||
-        KISS_NOPROMPT=1 kiss b "$pkg"
-    KISS_NOPROMPT=1 kiss i "$pkg"
+    [ -f "${XDG_CONFIG_HOME:-$HOME/.cache}/kiss/bin/$pkg@$ver-$rel.tar.${KISS_COMPRESS:-gz}" ] ||
+        KISS_PROMPT=0 kiss build "$pkg"
+    KISS_PROMPT=0 kiss install "$pkg"
 done
 
-# You can check out about post-installation 
+# You can check out about post-installation
 # from the configuration file
-msg "Installation Complete, starting custombuild procedure if there is one"
+msg "Installation Complete, starting 'postinstall' procedure if there is one"
 postinstall
 
 msg "Generating rootfs to $BASEDIR"
 (
     cd "$MNTDIR" || die "Could not change directory to $MNTDIR"
-    tar -cJf "$BASEDIR/carbs-rootfs-$(date +%Y%m%d)-$(uname -m).tar.xz" .
+    tar -cJf "$BASEDIR/kiss-rootfs-$(date +%Y%m%d)-$(uname -m).tar.xz" .
 )
 msg "Done!"

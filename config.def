@@ -1,17 +1,17 @@
 #
-# Configuration file for Carbs bootstrapper
+# Configuration file for KISS bootstrapper
 #
 
 # Root directory
 # This is where the rootfs will be installed.
-MNTDIR="$PWD/rootfs"
+MNTDIR="/tmp/rootfs"
 
 # List of packages to be installed
-# Most of those are already dependencies 
+# Most of those are already dependencies
 # of each other but it is not a bad idea
 # to put them to the list anyway.
-PKGS="baselayout kiss musl gcc make gzip xz zlib bzip2 binutils byacc curl \
-     linux-headers m4 flex busybox pkgconf rsync bearssl ca-certificates"
+PKGS="baselayout kiss musl gcc make pigz xz zlib bzip2 binutils bison curl \
+     linux-headers m4 flex busybox perl pkgconf openssl git"
 
 # Build flags
 # It is a good idea to not use flags like "native"
@@ -32,10 +32,25 @@ MAKEFLAGS="-j$(nproc)"
 # Repository
 # This repository will be cloned to /tmp/repo on the
 # host, and /var/db/kiss/repo on the target system.
-REPO="rsync://carbslinux.org/repo"
-HOST_REPO_PATH="/tmp/repo/core"
+REPO="git+https://github.com/kisslinux/repo"
+HOST_REPO_PATH="/tmp/repo/core:/tmp/repo/extra"
 
-export MNTDIR PKGS CFLAGS CXXFLAGS REPO HOST_REPO_PATH MAKEFLAGS
+# Hooks
+# By default, keep empty to prevent breakage.
+KISS_HOOK=""
+
+export MNTDIR PKGS CFLAGS CXXFLAGS REPO HOST_REPO_PATH MAKEFLAGS KISS_HOOK
+
+postrepodown() {
+	# This function runs after the repository has been downloaded, and allows
+	# for a 'quick fix' for certain packages. As a default case this fixes
+	# openssl, since openssl's 'update-certdata.sh' does not respect KISS_ROOT.
+	cat <<EOF > core/openssl/post-install
+#/bin/sh
+echo "run '/etc/ssl/update-certdata.sh' as root"
+EOF
+	true
+}
 
 postinstall() {
 	# You can preferably add some custom
@@ -47,6 +62,10 @@ postinstall() {
 	# because there is nothing else to be done,
 	# but you can safely remove it if you will
 	# be adding some post-installation commands
+
+	# Since we override openssl's post-install hook, we effectively run it here.
+	curl -sL https://curl.haxx.se/ca/cacert.pem > "${MNTDIR:?ERROR: MNTDIR not set}/etc/ssl/cert.pem"
+
 	true
 }
 
