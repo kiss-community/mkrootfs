@@ -31,7 +31,7 @@ MAKEFLAGS="-j$(nproc)"
 # Repository
 # This repository will be cloned to /tmp/repo on the
 # host, and /var/db/kiss/repo on the target system.
-REPO="git+https://github.com/kisslinux/repo"
+REPO="git+https://github.com/kiss-community/repo"
 HOST_REPO_PATH="/tmp/repo/core:/tmp/repo/extra"
 
 # Hooks
@@ -52,14 +52,6 @@ EOF
 	# Prevent GCC from doing a full bootstrap if possible.
 	gcc_ver=$(gcc --version | sed -n "/GCC/s/^.*) //p" | cut -d'.' -f1)
 	sed -E -i "s~(gcc_version)=null~\1=${gcc_ver}~" core/gcc/build
-
-	# Update pigz to 2.7 on the fly, since upstream is out of date.
-	cat <<EOF > core/pigz/version
-	2.7 1
-EOF
-	cat <<EOF > core/pigz/checksums
-	SKIP
-EOF
 
 	true
 }
