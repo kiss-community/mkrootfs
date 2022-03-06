@@ -10,9 +10,8 @@ MNTDIR="/tmp/rootfs"
 # Most of those are already dependencies
 # of each other but it is not a bad idea
 # to put them to the list anyway.
-PKGS="baselayout kiss musl gcc make pigz xz zlib bzip2 binutils bison curl \
-     linux-headers m4 flex busybox perl openssl"
-
+PKGS="baselayout binutils bison busybox bzip2 curl flex gcc git kiss \
+     linux-headers m4 make musl openssl perl pigz xz zlib"
 # Build flags
 # It is a good idea to not use flags like "native"
 # If you plan on using the tarball on another computer
