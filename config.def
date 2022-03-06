@@ -11,7 +11,7 @@ MNTDIR="/tmp/rootfs"
 # of each other but it is not a bad idea
 # to put them to the list anyway.
 PKGS="baselayout kiss musl gcc make pigz xz zlib bzip2 binutils bison curl \
-     linux-headers m4 flex busybox perl pkgconf openssl git"
+     linux-headers m4 flex busybox perl openssl"
 
 # Build flags
 # It is a good idea to not use flags like "native"
@@ -36,8 +36,8 @@ REPO="git+https://github.com/kisslinux/repo"
 HOST_REPO_PATH="/tmp/repo/core:/tmp/repo/extra"
 
 # Hooks
-# By default, keep empty to prevent breakage.
-KISS_HOOK=""
+# See `hook` for more details, TLDR - remove documentation.
+KISS_HOOK="$PWD/hook"
 
 export MNTDIR PKGS CFLAGS CXXFLAGS REPO HOST_REPO_PATH MAKEFLAGS KISS_HOOK
 
@@ -49,6 +49,15 @@ postrepodown() {
 #/bin/sh
 echo "run '/etc/ssl/update-certdata.sh' as root"
 EOF
+
+	# Update pigz to 2.7 on the fly, since upstream is out of date.
+	cat <<EOF > core/pigz/version
+	2.7 1
+EOF
+	cat <<EOF > core/pigz/checksums
+	SKIP
+EOF
+
 	true
 }
 
@@ -65,6 +74,8 @@ postinstall() {
 
 	# Since we override openssl's post-install hook, we effectively run it here.
 	curl -sL https://curl.haxx.se/ca/cacert.pem > "${MNTDIR:?ERROR: MNTDIR not set}/etc/ssl/cert.pem"
+
+	kiss remove perl
 
 	true
 }
