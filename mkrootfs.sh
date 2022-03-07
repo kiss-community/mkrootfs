@@ -158,6 +158,6 @@ postinstall
 msg "Generating rootfs to $BASEDIR"
 (
     cd "$MNTDIR" || die "Could not change directory to $MNTDIR"
-    tar -cJf "$BASEDIR/kiss-rootfs-$(date +%Y%m%d)-$(uname -m).tar.xz" .
+    tar -cJf "$BASEDIR/kiss-rootfs-$(date +%Y.%m)-$(uname -m).tar.xz" .
 )
 msg "Done!"
