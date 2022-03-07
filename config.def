@@ -53,15 +53,6 @@ EOF
 	gcc_ver=$(gcc --version | sed -n "/GCC/s/^.*) //p" | cut -d'.' -f1)
 	sed -E -i "s~(gcc_version)=null~\1=${gcc_ver}~" core/gcc/build
 
-	# Downgrade git since it currently doesn't build.
-	cat <<EOF > core/git/version
-2.34.1 1
-EOF
-	cat <<EOF > core/git/checksums
-SKIP
-SKIP
-EOF
-
 	true
 }
 
