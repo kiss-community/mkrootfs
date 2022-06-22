@@ -40,6 +40,10 @@ KISS_HOOK="$PWD/hook"
 
 export MNTDIR PKGS CFLAGS CXXFLAGS REPO HOST_REPO_PATH MAKEFLAGS KISS_HOOK
 
+checkenv() {
+	command -v perl || die "'perl' is needed for the bootstrapping process!"
+}
+
 postrepodown() {
 	# This function runs after the repository has been downloaded, and allows
 	# for a 'quick fix' for certain packages. As a default case this fixes
@@ -69,8 +73,6 @@ postinstall() {
 
 	# Since we override openssl's post-install hook, we effectively run it here.
 	curl -sL https://curl.haxx.se/ca/cacert.pem > "${MNTDIR:?ERROR: MNTDIR not set}/etc/ssl/cert.pem"
-
-	kiss remove perl
 
 	true
 }

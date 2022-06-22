@@ -23,6 +23,8 @@
 msg() { printf '\033[1;35m-> \033[m%s\n' "$@" ;}
 die() { printf '\033[1;31m!> ERROR: \033[m%s\n' "$@" >&2; exit 1 ;}
 
+msg "Checking to see if the environment can bootstrap successfully..."
+checkenv
 
 # Let's get current working directory
 BASEDIR="$PWD"
