@@ -4,6 +4,10 @@
 # Bootstrapper for KISS Linux
 # See LICENSE file for copyright and license details
 
+# Functions
+msg() { printf '\033[1;35m-> \033[m%s\n' "$@" ;}
+die() { printf '\033[1;31m!> ERROR: \033[m%s\n' "$@" >&2; exit 1 ;}
+
 msg "Checking to see if the environment can bootstrap successfully..."
 checkenv
 
@@ -21,10 +25,6 @@ checkenv
     . ./.kisslib
     rm -f .kisslib
 }
-
-# Functions
-msg() { printf '\033[1;35m-> \033[m%s\n' "$@" ;}
-die() { printf '\033[1;31m!> ERROR: \033[m%s\n' "$@" >&2; exit 1 ;}
 
 # Let's get current working directory
 BASEDIR="$PWD"
