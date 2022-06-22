@@ -8,6 +8,12 @@
 msg() { printf '\033[1;35m-> \033[m%s\n' "$@" ;}
 die() { printf '\033[1;31m!> ERROR: \033[m%s\n' "$@" >&2; exit 1 ;}
 
+# If there is no config file, we copy config.def
+# to config. After we make sure config file is
+# in place, we source the contents
+! [ -e config ] && cp config.def config
+. "${0%/*}/config"
+
 msg "Checking to see if the environment can bootstrap successfully..."
 checkenv
 
@@ -28,12 +34,6 @@ checkenv
 
 # Let's get current working directory
 BASEDIR="$PWD"
-
-# If there is no config file, we copy config.def
-# to config. After we make sure config file is
-# in place, we source the contents
-! [ -e config ] && cp config.def config
-. "${0%/*}/config"
 
 # Check whether absolutely required variables are set.
 [ "$PKGS" ]   || die "You must set PKGS variable to continue the bootstrapper"
