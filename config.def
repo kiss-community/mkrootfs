@@ -42,6 +42,7 @@ export MNTDIR PKGS CFLAGS CXXFLAGS REPO HOST_REPO_PATH MAKEFLAGS KISS_HOOK
 
 checkenv() {
 	command -v perl || die "'perl' is needed for the bootstrapping process!"
+	command -v kiss || die "'kiss' is needed for the bootstrapping process!"
 }
 
 postrepodown() {
