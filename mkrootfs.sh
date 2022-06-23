@@ -66,7 +66,7 @@ EOF
 
 # If there is NOCONFIRM, skip the prompt.
 [ "$NOCONFIRM" ] || {
-    printf '\033[1;33m?> \033[mDo you want to start the bootstrapper? (y/N)\n'
+    printf '\033[1;33m?> \033[mDo you want to start the bootstrapper? (Y/n)\n'
     read -r ans
     case "$ans" in [Yy]*|'') ;; *) die "User exited" ; esac
 }
