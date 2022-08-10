@@ -46,7 +46,7 @@ KISS_HOOK="$PWD/hook"
 export MNTDIR PKGS CFLAGS CXXFLAGS REPO HOST_REPO_PATH MAKEFLAGS KISS_HOOK TARBALL
 
 checkenv() {
-	[ "root" = $(whoami) ] || die "root priviledges are requried for the bootstrapping process!"
+	[ "$(whoami)" = root ] || die "root priviledges are requried for the bootstrapping process!"
 	command -v perl || die "'perl' is needed for the bootstrapping process!"
 	command -v kiss || die "'kiss' is needed for the bootstrapping process!"
 }
