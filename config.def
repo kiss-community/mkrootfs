@@ -31,14 +31,19 @@ MAKEFLAGS="-j$(nproc)"
 # Repository
 # This repository will be cloned to /tmp/repo on the
 # host, and /var/db/kiss/repo on the target system.
+# If you want to use a repository that is local to
+# your system, you can use 'local+/path/to/repo'
 REPO="git+https://github.com/kiss-community/repo"
 HOST_REPO_PATH="/tmp/repo/core:/tmp/repo/extra"
+
+# Final tarball name.
+TARBALL="kiss-rootfs-$(date +%Y.%m)-$(uname -m).tar.xz"
 
 # Hooks
 # See `hook` for more details, TLDR - remove documentation.
 KISS_HOOK="$PWD/hook"
 
-export MNTDIR PKGS CFLAGS CXXFLAGS REPO HOST_REPO_PATH MAKEFLAGS KISS_HOOK
+export MNTDIR PKGS CFLAGS CXXFLAGS REPO HOST_REPO_PATH MAKEFLAGS KISS_HOOK TARBALL
 
 checkenv() {
 	[ "root" = $(whoami) ] || die "root priviledges are requried for the bootstrapping process!"

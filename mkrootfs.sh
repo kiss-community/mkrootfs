@@ -36,8 +36,9 @@ checkenv
 BASEDIR="$PWD"
 
 # Check whether absolutely required variables are set.
-[ "$PKGS" ]   || die "You must set PKGS variable to continue the bootstrapper"
-[ "$MNTDIR" ] || die "You must specify fakeroot location 'MNTDIR' in order to continue the bootstrapper"
+[ "$PKGS" ]    || die "You must set PKGS variable to continue the bootstrapper"
+[ "$MNTDIR" ]  || die "You must specify fakeroot location 'MNTDIR' in order to continue the bootstrapper"
+[ "$TARBALL" ] || die "You must specify the TARBALL variable to continue the bootstrapper"
 
 # Word splitting is intentional here
 # shellcheck disable=2086
@@ -61,6 +62,9 @@ REPO            = $REPO
 REPOSITORY PATH = $HOST_REPO_PATH
 PKGS            = $PKGS
 ORDER           = $order
+
+Tarball will be written as:
+$BASEDIR/$TARBALL
 
 EOF
 
@@ -129,7 +133,6 @@ export KISS_PATH="${HOST_REPO_PATH:-/tmp/repo/core}"
 
 msg "Starting build from the PKGS variable"
 
-
 # shellcheck disable=2154
 for pkg in $order; do
     # Get the package directory so we can get version
@@ -160,6 +163,6 @@ postinstall
 msg "Generating rootfs to $BASEDIR"
 (
     cd "$MNTDIR" || die "Could not change directory to $MNTDIR"
-    tar -cJf "$BASEDIR/kiss-rootfs-$(date +%Y.%m)-$(uname -m).tar.xz" .
+    tar -cJf "$BASEDIR/$TARBALL" .
 )
 msg "Done!"
