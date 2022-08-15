@@ -149,7 +149,7 @@ for pkg in $order; do
     # pkg_order should be dealing with packages in a way that
     # no prompts are asked, but let's not take any chances
     # either.
-    if ! [ -f "${XDG_CONFIG_HOME:-$HOME/.cache}/kiss/bin/$pkg@$ver-$rel.tar.${KISS_COMPRESS:-gz}" ]; then
+    if ! [ -f "${XDG_CACHE_HOME:-$HOME/.cache}/kiss/bin/$pkg@$ver-$rel.tar.${KISS_COMPRESS:-gz}" ]; then
         KISS_PROMPT=0 kiss build "$pkg"
     fi
     KISS_PROMPT=0 kiss install "$pkg"
