@@ -143,15 +143,15 @@ for pkg in $order; do
     # Check if the package is already installed and skip.
     [ "$(kiss list "$pkg")" = "$pkg $ver-$rel" ] && continue
 
-    # Check if a prebuild tarball exists, build the package
-    # if it doesn't exist.
-    #
     # pkg_order should be dealing with packages in a way that
     # no prompts are asked, but let's not take any chances
     # either.
-    if ! [ -f "${XDG_CACHE_HOME:-$HOME/.cache}/kiss/bin/$pkg@$ver-$rel.tar.${KISS_COMPRESS:-gz}" ]; then
-        KISS_PROMPT=0 kiss build "$pkg"
-    fi
+
+    # Build and install every package explicitly.
+    # While not ideal, this keeps forked packages, as well as
+    # ones built with potentially different CFLAGS from polluting
+    # the tarball.
+    KISS_PROMPT=0 kiss build "$pkg"
     KISS_PROMPT=0 kiss install "$pkg"
 done
 
