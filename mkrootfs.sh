@@ -78,6 +78,8 @@ EOF
 # Script starts here
 
 msg "Starting Script..."
+# Save the time that we started the bootstrapper.
+awk 'BEGIN { srand(); print srand() }' > "$BASEDIR/starttime"
 msg "Setting KISS_ROOT to $MNTDIR"
 export KISS_ROOT="$MNTDIR"
 
@@ -166,3 +168,13 @@ msg "Generating rootfs to $BASEDIR"
     tar -cJf "$BASEDIR/$TARBALL" .
 )
 msg "Done!"
+
+read -r stime < "$BASEDIR/starttime"
+rm "${BASEDIR:?}/starttime"
+etime=$(awk 'BEGIN { srand(); print srand() }')
+elapsed_sec=$((etime - stime))
+elapsed_min=$((elapsed_sec / 60))
+elapsed_hrs=$((elapsed_min / 60))
+elapsed_sec=$((elapsed_sec % 60))
+elapsed_min=$((elapsed_min % 60))
+msg "Took ${elapsed_hrs}h.${elapsed_min}m.${elapsed_sec}s"
