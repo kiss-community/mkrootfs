@@ -17,21 +17,6 @@ die() { printf '\033[1;31m!> ERROR: \033[m%s\n' "$@" >&2; exit 1 ;}
 msg "Checking to see if the environment can bootstrap successfully..."
 checkenv
 
-{
-    # Source kiss as a library so that we can use pkg_order
-    #
-    # Get the line number so we can remove the last line
-    # that is calling the main function.
-    kissloc=$(command -v kiss)
-    kissln=$(wc -l < "$kissloc")
-
-    # Save the file on a temporary .kisslib file where we
-    # will be reading the library functions.
-    sed "${kissln}d" "$kissloc" > .kisslib
-    . ./.kisslib
-    rm -f .kisslib
-}
-
 # Let's get current working directory
 BASEDIR="$PWD"
 
@@ -39,10 +24,6 @@ BASEDIR="$PWD"
 [ "$PKGS" ]    || die "You must set PKGS variable to continue the bootstrapper"
 [ "$MNTDIR" ]  || die "You must specify fakeroot location 'MNTDIR' in order to continue the bootstrapper"
 [ "$TARBALL" ] || die "You must specify the TARBALL variable to continue the bootstrapper"
-
-# Word splitting is intentional here
-# shellcheck disable=2086
-pkg_order $PKGS
 
 # Print variables from the configuration file
 # shellcheck disable=2154
@@ -61,7 +42,6 @@ Repository and package options
 REPO            = $REPO
 REPOSITORY PATH = $HOST_REPO_PATH
 PKGS            = $PKGS
-ORDER           = $order
 
 Tarball will be written as:
 $BASEDIR/$TARBALL
@@ -136,7 +116,7 @@ export KISS_PATH="${HOST_REPO_PATH:-/tmp/repo/core}"
 msg "Starting build from the PKGS variable"
 
 # shellcheck disable=2154
-for pkg in $order; do
+for pkg in $PKGS; do
     # Get the package directory so we can get version
     # and release numbers.
     pkgdir=$(kiss search "$pkg" | sed 1q)
@@ -144,10 +124,6 @@ for pkg in $order; do
 
     # Check if the package is already installed and skip.
     [ "$(kiss list "$pkg")" = "$pkg $ver-$rel" ] && continue
-
-    # pkg_order should be dealing with packages in a way that
-    # no prompts are asked, but let's not take any chances
-    # either.
 
     # Build and install every package explicitly.
     # While not ideal, this keeps forked packages, as well as
