@@ -143,6 +143,10 @@ msg "Generating rootfs to $BASEDIR"
     cd "$MNTDIR" || die "Could not change directory to $MNTDIR"
     tar -cJf "$BASEDIR/$TARBALL" .
 )
+
+msg "Generating Checksums"
+sha256sum "$BASEDIR/$TARBALL" > "$BASEDIR/$TARBALL.sha256"
+
 msg "Done!"
 
 read -r stime < "$BASEDIR/starttime"
