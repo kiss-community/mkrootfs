@@ -10,8 +10,14 @@ MNTDIR="/tmp/mkrootfs/rootfs"
 # Most of those are already dependencies
 # of each other but it is not a bad idea
 # to put them to the list anyway.
-PKGS="baselayout binutils bison busybox bzip2 curl flex gcc git kiss \
-     linux-headers m4 make musl openssl perl pigz xz zlib"
+
+# The order here is very important. Packages earlier in this
+# list are installed first, so we need to be sure that for
+# each package, all of it's library dependencies are alreay
+# installed before we try to build it.
+PKGS="baselayout musl linux-headers zlib bzip2 pigz xz m4 \
+  flex bison binutils gcc busybox openssl curl git kiss make"
+
 # Build flags
 # It is a good idea to not use flags like "native"
 # If you plan on using the tarball on another computer
@@ -24,8 +30,13 @@ case "$march" in
     x86_64) march=x86-64 ;;
     i*86)   march=i686   ;;
 esac
-CFLAGS="-march=$march -mtune=generic -pipe -Os"
-CXXFLAGS="-march=$march -mtune=generic -pipe -Os"
+# The inclusion of '--sysroot' ensures that gcc and clang will use
+# the libraries that we are installing into the new rootfs rather
+# than the libraries on the host system. This prevents host libraries
+# that were compiled with cpu specific optimizations from polluting
+# the binaries and libraries in the new rootfs.
+CFLAGS="-march=$march -mtune=generic -pipe -Os --sysroot=$MNTDIR"
+CXXFLAGS="-march=$march -mtune=generic -pipe -Os --sysroot=$MNTDIR"
 MAKEFLAGS="-j$(nproc)"
 
 # Repository
@@ -59,6 +70,14 @@ postrepodown() {
 #/bin/sh
 echo "run '/etc/ssl/update-certdata.sh' as root"
 EOF
+
+	# Remove perl from openssl's 'depends'. It's only needed at
+	# make time, and `checkenv` should ensure that we have a
+	# working perl interpreter anyways.
+	# Perl is also the only package that doesn't seem to like
+	# the inclusion of the '--sysroot' flag.
+	# Plus it saves on compilation time.
+	sed -i "/perl/d" core/openssl/depends
 
 	# Prevent GCC from doing a full bootstrap if possible.
 	gcc_ver=$(gcc --version | sed -n "/GCC/s/^.*) //p" | cut -d'.' -f1)
