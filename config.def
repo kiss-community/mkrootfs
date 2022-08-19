@@ -45,7 +45,10 @@ MAKEFLAGS="-j$(nproc)"
 # If you want to use a repository that is local to
 # your system, you can use 'local+/path/to/repo'
 REPO="git+https://github.com/kiss-community/repo"
-HOST_REPO_PATH="/tmp/repo/core:/tmp/repo/extra"
+# HOST_REPO - path you want the above repo to be cloned to.
+# HOST_REPO_PATH - This effectively becomes the KISS_PATH for the bootstrapper.
+HOST_REPO="/tmp/repo"
+HOST_REPO_PATH="$HOST_REPO/core:$HOST_REPO/extra"
 
 # Final tarball name.
 TARBALL="kiss-rootfs-$(date +%Y.%m)-$(uname -m).tar.xz"

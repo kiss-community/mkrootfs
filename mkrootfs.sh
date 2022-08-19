@@ -40,7 +40,8 @@ MAKEFLAGS = $MAKEFLAGS
 Repository and package options
 
 REPO            = $REPO
-REPOSITORY PATH = $HOST_REPO_PATH
+HOST REPO PATH  = $HOST_REPO
+REPOS ENABLED   = $HOST_REPO_PATH
 PKGS            = $PKGS
 
 Tarball will be written as:
@@ -67,25 +68,25 @@ export KISS_ROOT="$MNTDIR"
 [ "$REPO" ] || die "REPO variable is not set"
 
 mkdir -p "$MNTDIR/var/db/kiss" /tmp
-rm -rf /tmp/repo "$MNTDIR/var/db/kiss/repo"
+rm -rf "$HOST_REPO" "$MNTDIR/var/db/kiss/repo"
 # Create parent directories for the repositories, and
 # remove pre-existing repositories. We then shallow
 # clone the repositories to both locations.
 case $REPO in
     git+*)
         msg "Cloning repository"
-        git clone --depth 1 "${REPO##*+}" /tmp/repo
+        git clone --depth 1 "${REPO##*+}" "$HOST_REPO"
     ;;
     local+*)
         msg "Copying repository"
-        cp -r "${REPO##*+}" /tmp/repo
+        cp -r "${REPO##*+}" "$HOST_REPO"
     ;;
 esac
-cp -r /tmp/repo "$MNTDIR/var/db/kiss/repo"
+cp -r "$HOST_REPO" "$MNTDIR/var/db/kiss/repo"
 
 msg "Repo Download Complete, starting 'postrepodown' procedure if there is one"
 (
-    cd /tmp/repo
+    cd "$HOST_REPO"
     postrepodown
 )
 
@@ -111,7 +112,7 @@ done < repositories
 
 
 # We export the new KISS_PATH
-export KISS_PATH="${HOST_REPO_PATH:-/tmp/repo/core}"
+export KISS_PATH="${HOST_REPO_PATH:-$HOST_REPO/core}"
 
 msg "Starting build from the PKGS variable"
 
