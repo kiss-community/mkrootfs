@@ -80,7 +80,9 @@ EOF
 	# Perl is also the only package that doesn't seem to like
 	# the inclusion of the '--sysroot' flag.
 	# Plus it saves on compilation time.
-	sed -i "/perl/d" core/openssl/depends
+	if [ -e core/openssl/depends ]; then
+		sed -i "/perl/d" core/openssl/depends
+	fi
 
 	# Prevent GCC from doing a full bootstrap if possible.
 	gcc_ver=$(gcc --version | sed -n "/GCC/s/^.*) //p" | cut -d'.' -f1)
