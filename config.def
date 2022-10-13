@@ -15,7 +15,7 @@ MNTDIR="/tmp/mkrootfs/rootfs"
 # list are installed first, so we need to be sure that for
 # each package, all of it's library dependencies are alreay
 # installed before we try to build it.
-PKGS="baselayout musl linux-headers zlib bzip2 pigz xz m4 \
+PKGS="baselayout certs musl linux-headers zlib bzip2 pigz xz m4 \
   flex bison binutils gcc busybox openssl curl git kiss make"
 
 # Build flags
