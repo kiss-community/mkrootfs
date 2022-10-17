@@ -61,7 +61,6 @@ export MNTDIR PKGS CFLAGS CXXFLAGS REPO HOST_REPO_PATH MAKEFLAGS KISS_HOOK TARBA
 
 checkenv() {
 	[ "$(whoami)" = root ] || die "root priviledges are requried for the bootstrapping process!"
-	command -v perl || die "'perl' is needed for the bootstrapping process!"
 	command -v kiss || die "'kiss' is needed for the bootstrapping process!"
 }
 
@@ -73,16 +72,6 @@ postrepodown() {
 #/bin/sh
 echo "run '/etc/ssl/update-certdata.sh' as root"
 EOF
-
-	# Remove perl from openssl's 'depends'. It's only needed at
-	# make time, and `checkenv` should ensure that we have a
-	# working perl interpreter anyways.
-	# Perl is also the only package that doesn't seem to like
-	# the inclusion of the '--sysroot' flag.
-	# Plus it saves on compilation time.
-	if [ -e core/openssl/depends ]; then
-		sed -i "/perl/d" core/openssl/depends
-	fi
 
 	# Prevent GCC from doing a full bootstrap if possible.
 	gcc_ver=$(gcc --version | sed -n "/GCC/s/^.*) //p" | cut -d'.' -f1)
