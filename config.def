@@ -66,12 +66,7 @@ checkenv() {
 
 postrepodown() {
 	# This function runs after the repository has been downloaded, and allows
-	# for a 'quick fix' for certain packages. As a default case this fixes
-	# openssl, since openssl's 'update-certdata.sh' does not respect KISS_ROOT.
-	cat <<EOF > core/openssl/post-install
-#/bin/sh
-echo "run '/etc/ssl/update-certdata.sh' as root"
-EOF
+	# for a 'quick fix' for certain packages.
 
 	# Prevent GCC from doing a full bootstrap if possible.
 	gcc_ver=$(gcc --version | sed -n "/GCC/s/^.*) //p" | cut -d'.' -f1)
@@ -90,10 +85,6 @@ postinstall() {
 	# because there is nothing else to be done,
 	# but you can safely remove it if you will
 	# be adding some post-installation commands
-
-	# Since we override openssl's post-install hook, we effectively run it here.
-	curl -sL https://curl.haxx.se/ca/cacert.pem > "${MNTDIR:?ERROR: MNTDIR not set}/etc/ssl/cert.pem"
-
 	# Comment the line below if you want your tarball to have the package repo.
 	rm -rf "${MNTDIR:?ERROR: MNTDIR not set}/var/db/kiss/repo"
 
