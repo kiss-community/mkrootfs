@@ -16,7 +16,7 @@ MNTDIR="/tmp/mkrootfs/rootfs"
 # each package, all of it's library dependencies are alreay
 # installed before we try to build it.
 PKGS="baselayout certs musl linux-headers zlib bzip2 pigz xz m4 \
-  flex bison binutils gcc busybox openssl curl git kiss make"
+  flex bison binutils gmp mpfr libmpc gcc busybox openssl curl git kiss make"
 
 # Build flags
 # It is a good idea to not use flags like "native"
