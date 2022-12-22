@@ -146,7 +146,7 @@ msg "Generating rootfs to $BASEDIR"
 )
 
 msg "Generating Checksums"
-sha256sum "$BASEDIR/$TARBALL" > "$BASEDIR/$TARBALL.sha256"
+b3sum "$BASEDIR/$TARBALL" > "$BASEDIR/$TARBALL.b3sum"
 
 msg "Done!"
 
