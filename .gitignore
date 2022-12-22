@@ -1,3 +1,5 @@
 config
 rootfs
 *.tar.xz
+*.sha256
+*.b3sum
