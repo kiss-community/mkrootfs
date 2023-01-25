@@ -139,6 +139,10 @@ done
 msg "Installation Complete, starting 'postinstall' procedure if there is one"
 postinstall
 
+msg "Copying 'config' and 'mkrootfs.sh' to $MNTDIR/root"
+cp config      "$MNTDIR/root"
+cp mkrootfs.sh "$MNTDIR/root"
+
 msg "Generating rootfs to $BASEDIR"
 (
     cd "$MNTDIR" || die "Could not change directory to $MNTDIR"
