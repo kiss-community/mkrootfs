@@ -80,6 +80,9 @@ postrepodown() {
 		cd "$OLDPWD"
 	done
 
+	# Remove pigz's post-install hook since it will fail.
+	rm core/pigz/post-install
+
 	true
 }
 
