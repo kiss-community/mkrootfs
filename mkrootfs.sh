@@ -139,10 +139,11 @@ done
 msg "Installation Complete, starting 'postinstall' procedure if there is one"
 postinstall
 
-msg "Copying 'hook', 'config', and 'mkrootfs.sh' to $MNTDIR/root"
-cp hook        "$MNTDIR/root"
-cp config      "$MNTDIR/root"
-cp mkrootfs.sh "$MNTDIR/root"
+msg "Copying 'hook', 'config', and 'mkrootfs.sh' to $MNTDIR/root/mkrootfs"
+mkdir -p       "$MNTDIR/root/mkrootfs"
+cp hook        "$MNTDIR/root/mkrootfs"
+cp config      "$MNTDIR/root/mkrootfs"
+cp mkrootfs.sh "$MNTDIR/root/mkrootfs"
 
 msg "Generating rootfs to $BASEDIR"
 (
