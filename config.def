@@ -64,7 +64,9 @@ checkenv() {
     command -v kiss || die "'kiss' is needed for the bootstrapping process!"
     command -v b3sum || die "'b3sum' is needed for the bootstrapping process!"
     # FIXME: disable zstd support in binutils
-    command -v zstd && die "'zstd' is picked up by 'binutils' with no way to disable and will lead to a build failure!"
+    if command -v zstd; then
+	die "'zstd' is picked up by 'binutils' with no way to disable and will lead to a build failure!"
+    fi
 }
 
 postrepodown() {
