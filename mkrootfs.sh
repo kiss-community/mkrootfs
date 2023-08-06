@@ -75,7 +75,22 @@ rm -rf "$HOST_REPO" "$MNTDIR/var/db/kiss/repo"
 case $REPO in
     git+*)
         msg "Cloning repository"
-        git clone --depth 1 "${REPO##*+}" "$HOST_REPO"
+        mkdir -p "$HOST_REPO"
+        cd "$HOST_REPO"
+
+        git init
+        git remote set-url origin "${REPO##*+}"
+        if [ -e "$BASEDIR/commit" ]; then
+            com="$(cat "$BASEDIR/commit")"
+            msg "$BASEDIR/commit found, using $com from ${REPO##*+}"
+        else
+            com="HEAD"
+            msg "$BASEDIR/commit not found, using $com from ${REPO##*+}"
+        fi
+        git fetch --depth=1 origin "$com"
+        git reset --hard FETCH_HEAD
+
+        cd "$OLDPWD"
     ;;
     local+*)
         msg "Copying repository"
@@ -144,6 +159,9 @@ mkdir -p       "$MNTDIR/root/mkrootfs"
 cp hook        "$MNTDIR/root/mkrootfs"
 cp config      "$MNTDIR/root/mkrootfs"
 cp mkrootfs.sh "$MNTDIR/root/mkrootfs"
+
+git -C "$HOST_REPO" log -n 1 --pretty=format:"%H" \
+    > "$MNTDIR/root/mkrootfs/commit"
 
 msg "Generating rootfs to $BASEDIR"
 (
