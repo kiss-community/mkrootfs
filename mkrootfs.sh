@@ -79,7 +79,7 @@ case $REPO in
         cd "$HOST_REPO"
 
         git init
-        git remote set-url origin "${REPO##*+}"
+        git remote add origin "${REPO##*+}"
         if [ -e "$BASEDIR/commit" ]; then
             com="$(cat "$BASEDIR/commit")"
             msg "$BASEDIR/commit found, using $com from ${REPO##*+}"
