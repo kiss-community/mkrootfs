@@ -38,6 +38,9 @@ esac
 CFLAGS="-march=$march -mtune=generic -pipe -Os --sysroot=$MNTDIR"
 CXXFLAGS="-march=$march -mtune=generic -pipe -Os --sysroot=$MNTDIR"
 MAKEFLAGS="-j$(nproc)"
+PKG_CONFIG_PATH=""
+PKG_CONFIG_SYSROOT_DIR="$MNTDIR"
+PKG_CONFIG_LIBDIR="$MNTDIR/usr/lib/pkgconfig:$MNTDIR/usr/share/pkgconfig"
 
 # Repository
 # This repository will be cloned to /tmp/repo on the
