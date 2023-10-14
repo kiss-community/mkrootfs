@@ -114,9 +114,7 @@ mv -f "\$1/usr/share/man/man1/nc.1" "\$1/usr/share/man/man1/libressl-nc.1"
 rm -f "\$1/etc/ssl/cert.pem"
 EOF
     chmod +x build
-    libressl_ver="$(curl -s https://libressl.org/
-        | grep "latest stable"
-        | grep -Eo "([0-9]\.?)+")"
+    libressl_ver="$(curl -s https://libressl.org/ | grep "latest stable" | grep -Eo "([0-9]\.?)+")"
     echo "https://ftp.openbsd.org/pub/OpenBSD/LibreSSL/libressl-$libressl_ver.tar.gz" > sources
     echo "$libressl_ver 1" > version
     kiss checksum
