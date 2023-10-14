@@ -54,7 +54,7 @@ HOST_REPO="/tmp/repo"
 HOST_REPO_PATH="$HOST_REPO/core:$HOST_REPO/extra"
 
 # Final tarball name.
-TARBALL="kiss-rootfs-$(date +%Y.%m)-$(uname -m).tar.xz"
+TARBALL="kiss-libressl-rootfs-$(date +%Y.%m)-$(uname -m).tar.xz"
 
 # Hooks
 # See `hook` for more details, TLDR - remove documentation.
