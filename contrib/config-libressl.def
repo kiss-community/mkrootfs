@@ -120,6 +120,9 @@ EOF
     kiss checksum
     cd $OLDPWD
 
+    sed "s/openssl/libressl/" core/curl/depends > _
+    mv -f _ core/curl/depends
+
     true
 }
 
