@@ -1,0 +1,113 @@
+#
+# Configuration file for KISS bootstrapper
+#
+
+# Root directory
+# This is where the rootfs will be installed.
+MNTDIR="/tmp/mkrootfs/rootfs"
+
+# List of packages to be installed
+# Most of those are already dependencies
+# of each other but it is not a bad idea
+# to put them to the list anyway.
+
+# The order here is very important. Packages earlier in this
+# list are installed first, so we need to be sure that for
+# each package, all of it's library dependencies are alreay
+# installed before we try to build it.
+PKGS="baselayout certs glibc linux-headers zlib b3sum bzip2 pigz xz m4 \
+  flex bison binutils gmp mpfr libmpc gcc busybox openssl curl git kiss make"
+
+# Build flags
+# It is a good idea to not use flags like "native"
+# If you plan on using the tarball on another computer
+# due to architechtural differences. You can manually
+# override this march configuration here by removing the
+# case.
+#
+march=$(uname -m)
+case "$march" in
+    x86_64) march=x86-64 ;;
+    i*86)   march=i686   ;;
+esac
+# The inclusion of '--sysroot' ensures that gcc and clang will use
+# the libraries that we are installing into the new rootfs rather
+# than the libraries on the host system. This prevents host libraries
+# that were compiled with cpu specific optimizations from polluting
+# the binaries and libraries in the new rootfs.
+CFLAGS="-march=$march -mtune=generic -pipe -Os --sysroot=$MNTDIR"
+CXXFLAGS="-march=$march -mtune=generic -pipe -Os --sysroot=$MNTDIR"
+MAKEFLAGS="-j$(nproc)"
+PKG_CONFIG_PATH=""
+PKG_CONFIG_SYSROOT_DIR="$MNTDIR"
+PKG_CONFIG_LIBDIR="$MNTDIR/usr/lib/pkgconfig:$MNTDIR/usr/share/pkgconfig"
+
+# Repository
+# This repository will be cloned to /tmp/repo on the
+# host, and /var/db/kiss/repo on the target system.
+# If you want to use a repository that is local to
+# your system, you can use 'local+/path/to/repo'
+REPO="git+https://github.com/kiss-community/grepo"
+# HOST_REPO - path you want the above repo to be cloned to.
+# HOST_REPO_PATH - This effectively becomes the KISS_PATH for the bootstrapper.
+HOST_REPO="/tmp/repo"
+HOST_REPO_PATH="$HOST_REPO/core:$HOST_REPO/extra"
+
+# Final tarball name.
+TARBALL="gkiss-rootfs-$(date +%Y.%m)-$(uname -m).tar.xz"
+
+# Hooks
+# See `hook` for more details, TLDR - remove documentation.
+KISS_HOOK="$PWD/hook"
+
+export MNTDIR PKGS CFLAGS CXXFLAGS REPO HOST_REPO_PATH MAKEFLAGS KISS_HOOK TARBALL
+
+checkenv() {
+    [ "$(whoami)" = root ] || die "root priviledges are requried for the bootstrapping process!"
+    command -v kiss || die "'kiss' is needed for the bootstrapping process!"
+    command -v b3sum || die "'b3sum' is needed for the bootstrapping process!"
+    command -v gawk || die "'gawk' is neeeded for the bootstrapping process!"
+    # FIXME: disable zstd support in binutils
+    if command -v zstd; then
+        die "'zstd' is picked up by 'binutils' with no way to disable and will lead to a build failure!"
+    fi
+}
+
+postrepodown() {
+    # This function runs after the repository has been downloaded, and allows
+    # for a 'quick fix' for certain packages.
+
+    # Prevent GCC from doing a full bootstrap if possible.
+    gcc_ver=$(gcc -dumpfullversion)
+    sed -E -i "s~(gcc_version)=null~\1=${gcc_ver}~" core/gcc/build
+
+    # Temporarily fix kiss checksum issues with these two packages.
+    for d in b3sum kiss; do
+        cd "core/$d"
+        kiss checksum
+        cd "$OLDPWD"
+    done
+
+    # Remove pigz's post-install hook since it will fail.
+    rm core/pigz/post-install
+
+    true
+}
+
+postinstall() {
+    # You can preferably add some custom
+    # commands if you want a postinstall
+    # procedure. This runs right after kiss
+    # install is complete
+
+    # Currently default function is 'true'
+    # because there is nothing else to be done,
+    # but you can safely remove it if you will
+    # be adding some post-installation commands
+    # Comment the line below if you want your tarball to have the package repo.
+    rm -rf "${MNTDIR:?ERROR: MNTDIR not set}/var/db/kiss/repo"
+
+    true
+}
+
+# vim:filetype=sh
